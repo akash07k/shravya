@@ -1,0 +1,9 @@
+[delivery]
+# Leave a URL empty to disable its corresponding downloads or checks.
+catalog_url = "https://raw.githubusercontent.com/akash07k/shravya/main/catalogs/current.toml"
+release_api = "https://api.github.com/repos/akash07k/shravya/releases/latest"
+
+[sources]
+bluetts_repository = "maxmelichov/BlueTTS"
+# Leave empty to use the repository's default branch.
+bluetts_branch = ""
