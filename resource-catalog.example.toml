@@ -1,0 +1,12 @@
+format = 1
+interface = "bluev3-v1"
+# List only add-on versions compatible with both packs.
+addons = ["0.1.0"]
+
+[runtime]
+id = "replace-with-runtime-pack-id"
+url = "https://example.com/runtime.zip"
+
+[model]
+id = "replace-with-model-pack-id"
+url = "https://example.com/model.zip"
