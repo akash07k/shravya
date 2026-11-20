@@ -1,0 +1,24 @@
+flatbuffers==25.12.19
+    # via onnxruntime
+maturin==1.16.0
+    # via -r tools/resource-build-requirements.in
+ml-dtypes==0.7.0
+    # via onnx
+numpy==2.5.5
+    # via
+    #   -r tools/resource-build-requirements.in
+    #   ml-dtypes
+    #   onnx
+    #   onnxruntime
+onnx==1.23.2
+    # via -r tools/resource-build-requirements.in
+onnxruntime==1.29.0
+    # via -r tools/resource-build-requirements.in
+packaging==26.3
+    # via onnxruntime
+protobuf==7.36.2
+    # via
+    #   onnx
+    #   onnxruntime
+typing-extensions==4.16.0
+    # via onnx

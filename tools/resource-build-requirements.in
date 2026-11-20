@@ -1,0 +1,5 @@
+# Isolated build tools; never included in the add-on runtime.
+maturin==1.16.0
+onnx==1.23.2
+onnxruntime==1.29.0
+numpy==2.5.5

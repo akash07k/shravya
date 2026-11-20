@@ -1,0 +1,11 @@
+# Windows x64 runtime dependencies tested with NVDA's Python 3.13.
+onnxruntime-gpu==1.29.0
+numpy==2.5.5
+num2words==0.5.14
+nvidia-cudnn-cu13==9.28.1.4
+nvidia-cublas==13.10.0.20
+nvidia-cuda-nvrtc==13.5.37
+docopt==0.6.2
+flatbuffers==25.12.19
+packaging==26.3
+protobuf==7.36.2
