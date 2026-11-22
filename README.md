@@ -147,8 +147,7 @@ These builders do not publish files.
 
 The add-on and release workflow use
 `addon\synthDrivers\shravya\config.toml` as the delivery configuration. Its
-defaults point to the GitHub catalog and latest-release API. The catalog URL
-will not work until the catalog and repository are publicly accessible.
+defaults point to the GitHub catalog and latest-release API.
 Leave a URL empty to disable its corresponding downloads or checks. The add-on
 includes this file when built. For example:
 
