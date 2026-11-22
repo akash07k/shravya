@@ -12,7 +12,7 @@ def load_report():
 	package = ModuleType("shravya_report_test")
 	package.__path__ = [str(DRIVER)]
 	spec = importlib.util.spec_from_file_location(
-		"shravya_report_test._diagnostic_report", DRIVER / "_diagnostic_report.py"
+		"shravya_report_test._diagnostic_report", DRIVER / "_diagnostic_report.py",
 	)
 	module = importlib.util.module_from_spec(spec)
 	module.__dict__["_"] = lambda value: value

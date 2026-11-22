@@ -80,7 +80,7 @@ class TestModelDownload(unittest.TestCase):
 			if name != "voices/noa.json"
 		]
 		with patch.object(
-			self.module.urllib.request, "urlopen", return_value=io.BytesIO(json.dumps(listing).encode())
+			self.module.urllib.request, "urlopen", return_value=io.BytesIO(json.dumps(listing).encode()),
 		):
 			with self.assertRaisesRegex(ValueError, "voices/noa.json"):
 				self.module.download_model(self.bundle)

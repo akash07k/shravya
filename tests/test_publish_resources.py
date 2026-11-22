@@ -146,7 +146,7 @@ class TestResourcePublication(unittest.TestCase):
 			catalog = original_build(kind, output, repo, tag, addons, old, preserve_sources=preserve_sources)
 			(output / "model-new.zip").unlink()
 			catalog.write_text(
-				catalog.read_text(encoding="utf-8").replace("model-1", "model-old"), encoding="utf-8"
+				catalog.read_text(encoding="utf-8").replace("model-1", "model-old"), encoding="utf-8",
 			)
 			return catalog
 

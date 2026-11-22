@@ -135,7 +135,8 @@ def publish(kind: str, addons: list[str], repo: str, token: str) -> None:
 			else:
 				pair[component] = output / f"existing-{component}.zip"
 				request = urllib.request.Request(
-					data[component]["url"], headers={"User-Agent": "Shravya resource publication"}
+					data[component]["url"],
+					headers={"User-Agent": "Shravya resource publication"},
 				)
 				with (
 					urllib.request.urlopen(request, timeout=60) as response,
@@ -147,7 +148,13 @@ def publish(kind: str, addons: list[str], repo: str, token: str) -> None:
 		smoke_resource_pair.smoke(pair["runtime"], pair["model"])
 		release_id = release(repo, token, baseline)
 		_ = command(
-			"gh", "release", "upload", "resources", *(str(path) for path in new_archives), "--repo", repo
+			"gh",
+			"release",
+			"upload",
+			"resources",
+			*(str(path) for path in new_archives),
+			"--repo",
+			repo,
 		)
 		verify_assets(repo, token, release_id, {path.name for path in new_archives})
 		for component in ("runtime", "model"):

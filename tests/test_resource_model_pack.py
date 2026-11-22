@@ -132,8 +132,10 @@ class TestModelPack(unittest.TestCase):
 				destination.write_bytes(b"quantized")
 
 			with (
-				patch.object(build_resource_model.download_resource_model, "download_model",
-					side_effect=lambda destination: (shutil.copytree(self.bundle, destination), "a" * 40)[1]),
+				patch.object(
+        build_resource_model.download_resource_model, "download_model",
+        side_effect=lambda destination: (shutil.copytree(self.bundle, destination), "a" * 40)[1],
+    ),
 				patch.object(resource_sources, "download_source", side_effect=AssertionError("unexpected download")),
 				patch.object(build_resource_model, "quantize_model", side_effect=quantize),
 			):

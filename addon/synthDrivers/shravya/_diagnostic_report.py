@@ -17,7 +17,7 @@ def _timings(label: str, values: list[int]) -> str:
 		return _("{label}: No valid samples").format(label=label)
 	# Translators: Summary statistics for a timing measured in milliseconds.
 	return _(
-		"{label}: median {median:.3f}, minimum {minimum:.3f}, maximum {maximum:.3f} milliseconds"
+		"{label}: median {median:.3f}, minimum {minimum:.3f}, maximum {maximum:.3f} milliseconds",
 	).format(
 		label=label,
 		median=median(values) / 1_000_000,
@@ -51,7 +51,7 @@ def format_report(events: list[TimingEvent]) -> str:
 				_timings(_("Key to output"), result.latencies_ns),
 				_timings(_("Queue"), result.queue_ns),
 				_timings(_("Synthesis to first playable audio"), result.synthesis_ns),
-			]
+			],
 		)
 	loads = model_loads_ns(events)
 	lines.append("")

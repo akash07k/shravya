@@ -116,7 +116,7 @@ class TestSynthDriver(unittest.TestCase):
 			"config": module("config", conf=self.conf),
 			"core": module("core", callLater=lambda delay, function: function()),
 			"NVDAState": module(
-				"NVDAState", WritePaths=module("WritePaths", configDir=str(self.root / "config"))
+				"NVDAState", WritePaths=module("WritePaths", configDir=str(self.root / "config")),
 			),
 			"nvwave": module(
 				"nvwave",
@@ -147,7 +147,7 @@ class TestSynthDriver(unittest.TestCase):
 		patcher.start()
 		self.addCleanup(patcher.stop)
 		spec = importlib.util.spec_from_file_location(
-			"shravya_test_driver", DRIVER_PATH, submodule_search_locations=[str(DRIVER_PATH.parent)]
+			"shravya_test_driver", DRIVER_PATH, submodule_search_locations=[str(DRIVER_PATH.parent)],
 		)
 		self.driver_module = importlib.util.module_from_spec(spec)
 		self.driver_module.__dict__["_"] = lambda value: value
@@ -236,7 +236,7 @@ class TestSynthDriver(unittest.TestCase):
 			self.assertIn("model-1", driver.availableVoices)
 			driver._load_engine(False)
 			engine.assert_called_with(
-				runtime, use_cuda=False, model_resources=models[1], fallback_voices={"model-1"}
+				runtime, use_cuda=False, model_resources=models[1], fallback_voices={"model-1"},
 			)
 			self.assertIn("model-2", driver.availableVoices)
 			self.assertNotIn("model-1", driver.availableVoices)
@@ -250,7 +250,7 @@ class TestSynthDriver(unittest.TestCase):
 		other = self.root / "other-runtime"
 		with (
 			patch.object(
-				self.driver_module, "resource_directories", return_value=(self.root, self.root), create=True
+				self.driver_module, "resource_directories", return_value=(self.root, self.root), create=True,
 			) as select,
 			patch.object(self.driver_module, "BlueEngine") as engine,
 		):
@@ -363,7 +363,7 @@ class TestSynthDriver(unittest.TestCase):
 		driver._set_rate(0)
 		driver.speak(["third"])
 		self.worker.return_value.speak.assert_called_with(
-			["third"], speed=0.5, steps=4, seed=0, voice="noa", method="native", pitch=50
+			["third"], speed=0.5, steps=4, seed=0, voice="noa", method="native", pitch=50,
 		)
 
 	def test_preset_voice_selector_defaults_to_noa_and_snapshots_changes(self):

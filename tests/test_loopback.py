@@ -37,7 +37,7 @@ class TestLoopbackFormat(unittest.TestCase):
 	def test_pcm24_mono(self):
 		format = self.describe(wave_format(1, 1, 44100, 24))
 		self.assertEqual(
-			(format.sample_rate, format.channels, format.encoding, format.frame_bytes), (44100, 1, "pcm24", 3)
+			(format.sample_rate, format.channels, format.encoding, format.frame_bytes), (44100, 1, "pcm24", 3),
 		)
 
 	def test_rejects_truncated_and_unsupported_formats(self):

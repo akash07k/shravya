@@ -165,7 +165,7 @@ class TestResourceLocation(unittest.TestCase):
 			resources.stage_for_addon(root, "2.0.0", "runtime-2", "model-1")
 			with self.assertRaisesRegex(RuntimeError, "pending"):
 				resources.stage_for_restart(
-					root, "runtime-2", "model-1", expected=("runtime-1", "model-1")
+					root, "runtime-2", "model-1", expected=("runtime-1", "model-1"),
 				)
 			with self.assertRaisesRegex(RuntimeError, "pending"):
 				resources.stage_for_addon(root, "2.0.0", "runtime-1", "model-1")

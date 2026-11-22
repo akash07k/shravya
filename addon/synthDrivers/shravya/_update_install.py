@@ -39,7 +39,12 @@ if TYPE_CHECKING:
 		PD_ELAPSED_TIME: int
 
 		def ProgressDialog(
-			self, title: str, message: str, *, style: int, parent: object
+			self,
+			title: str,
+			message: str,
+			*,
+			style: int,
+			parent: object,
 		) -> _ProgressDialog: ...
 		def CallAfter(self, callback: Callable[..., None], *args: object) -> None: ...
 
@@ -67,7 +72,9 @@ def install_update(update: Update, stopped: threading.Event) -> None:
 		return
 	if _pending():
 		_ignored = _message_box(
-			_("Restart NVDA to finish the pending Shravya add-on change."), _("Shravya update"), wx.OK
+			_("Restart NVDA to finish the pending Shravya add-on change."),
+			_("Shravya update"),
+			wx.OK,
 		)
 		return
 	frame = gui.mainFrame
@@ -160,7 +167,7 @@ def install_update(update: Update, stopped: threading.Event) -> None:
 							or bundle.manifest["version"] != update.version
 						):
 							raise ValueError(
-								"The downloaded add-on identity or version does not match the release"
+								"The downloaded add-on identity or version does not match the release",
 							)
 						if _pending():
 							raise RuntimeError("A Shravya add-on change is already pending")

@@ -52,7 +52,7 @@ class TestResourceBuildEntry(unittest.TestCase):
 
 	def build(self, kind="both", existing=None):
 		return build_resources.build(
-			kind, self.root, "akash07k/shravya", "v1.2.3", ["1.2.3"], existing
+			kind, self.root, "akash07k/shravya", "v1.2.3", ["1.2.3"], existing,
 		)
 
 	def test_builds_both_and_generates_catalog_from_real_archive_ids(self):
@@ -100,12 +100,14 @@ class TestResourceBuildEntry(unittest.TestCase):
 		self.assertEqual(self.model.call_count, 1)
 		self.runtime.assert_not_called()
 		data = tomllib.loads(catalog.read_text(encoding="utf-8"))
-		self.assertEqual(data["runtime"], {
-			"id": "runtime-old", "url": "https://example.test/old.zip",
-		})
+		self.assertEqual(
+      data["runtime"], {
+       "id": "runtime-old", "url": "https://example.test/old.zip",
+      },
+  )
 		self.assertEqual(data["model"]["id"], "model-generated")
 		catalog = build_resources.build(
-			"runtime", self.root / "other", "akash07k/shravya", "v1.2.3", ["1.2.3"], existing
+			"runtime", self.root / "other", "akash07k/shravya", "v1.2.3", ["1.2.3"], existing,
 		)
 		self.assertEqual(
 			tomllib.loads(catalog.read_text(encoding="utf-8"))["model"],
@@ -187,8 +189,10 @@ class TestResourceBuildEntry(unittest.TestCase):
 		for args in (
 			["--kind", "both", "--output", str(self.root)],
 			["--kind", "both", "--output", str(self.root), "--source", "latest"],
-			["--kind", "both", "--output", str(self.root), "--source", "latest",
-			 "--delivery", "local", "--repository", "owner/repo"],
+			[
+       "--kind", "both", "--output", str(self.root), "--source", "latest",
+       "--delivery", "local", "--repository", "owner/repo",
+   ],
 		):
 			with (
 				self.subTest(args=args),
@@ -296,9 +300,11 @@ class TestResourceBuildEntry(unittest.TestCase):
 		env.update(PATH=f"{self.root};{env['PATH']}", SHRAVYA_TEST_LOG=str(log))
 		result = subprocess.run([os.environ["COMSPEC"], "/d", "/c", str(batch), "--help"], env=env)
 		self.assertEqual(result.returncode, 0)
-		self.assertEqual(log.read_text().splitlines(), [
-			"sync --locked", "run --no-sync python -B -m tools.build_resources --help",
-		])
+		self.assertEqual(
+      log.read_text().splitlines(), [
+       "sync --locked", "run --no-sync python -B -m tools.build_resources --help",
+      ],
+  )
 		log.unlink()
 		env["SHRAVYA_FAIL_SYNC"] = "1"
 		result = subprocess.run([os.environ["COMSPEC"], "/d", "/c", str(batch), "--help"], env=env)

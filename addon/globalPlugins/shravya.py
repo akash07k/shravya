@@ -82,21 +82,33 @@ class ShravyaSettingsPanel(gui.settingsDialogs.SettingsPanel):
 		helper = gui.guiHelper.BoxSizerHelper(self, sizer=sizer)
 		# Translators: Select the way Shravya changes speech rate.
 		self.rate_method = helper.addLabeledControl(  # pyright: ignore[reportUnknownMemberType]
-			_("&Rate method:"), wx.Choice, choices=[_("BlueV3 native"), _("Sonic")]
+			_("&Rate method:"),
+			wx.Choice,
+			choices=[_("BlueV3 native"), _("Sonic")],
 		)
 		self.rate_method.SetSelection(_RATE_METHODS.index(_settings.rate_method()))
 		# Translators: Select the processor used by Shravya.
 		self.compute = helper.addLabeledControl(  # pyright: ignore[reportUnknownMemberType]
-			_("&Compute device:"), wx.Choice, choices=[_("CPU"), _("NVIDIA CUDA")]
+			_("&Compute device:"),
+			wx.Choice,
+			choices=[_("CPU"), _("NVIDIA CUDA")],
 		)
 		self.compute.SetSelection(1 if _settings.use_cuda() else 0)
 		# Translators: Select the number of BlueV3 inference steps.
 		self.steps = helper.addLabeledControl(  # pyright: ignore[reportUnknownMemberType]
-			_("&Inference steps:"), wx.SpinCtrl, min=1, max=_settings.MAX_STEPS, initial=_settings.steps()
+			_("&Inference steps:"),
+			wx.SpinCtrl,
+			min=1,
+			max=_settings.MAX_STEPS,
+			initial=_settings.steps(),
 		)
 		# Translators: Set the fixed seed for repeatable speech.
 		self.seed = helper.addLabeledControl(  # pyright: ignore[reportUnknownMemberType]
-			_("Random &seed:"), wx.SpinCtrl, min=0, max=_settings.MAX_SEED, initial=_settings.seed()
+			_("Random &seed:"),
+			wx.SpinCtrl,
+			min=0,
+			max=_settings.MAX_SEED,
+			initial=_settings.seed(),
 		)
 		# Translators: Open the Shravya resource setup dialog.
 		button = helper.addItem(wx.Button(self, label=_("Set up Shravya &resources...")))  # pyright: ignore[reportUnknownMemberType]
@@ -117,7 +129,10 @@ class ShravyaSettingsPanel(gui.settingsDialogs.SettingsPanel):
 		if not 0 <= rate_index < len(_RATE_METHODS) or compute_index not in (0, 1):
 			raise ValueError("A Shravya settings selection is missing")
 		_settings.save(
-			_RATE_METHODS[rate_index], compute_index == 1, self.steps.GetValue(), self.seed.GetValue()
+			_RATE_METHODS[rate_index],
+			compute_index == 1,
+			self.steps.GetValue(),
+			self.seed.GetValue(),
 		)
 		_apply_active_synth()
 
@@ -242,7 +257,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 		try:
 			synth.set_diagnostic(capture.record)
 			observer = InputObserver(
-				capture.record, self.script_controlledDiagnostic, self.script_toggleDiagnostic
+				capture.record,
+				self.script_controlledDiagnostic,
+				self.script_toggleDiagnostic,
 			)
 			observer.start()
 			self._observer = observer
@@ -311,7 +328,10 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
 			ui.message(message)
 		elif events is not None:
 			ui.browseableMessage(
-				format_report(events), title=_("Shravya latency report"), closeButton=True, copyButton=True
+				format_report(events),
+				title=_("Shravya latency report"),
+				closeButton=True,
+				copyButton=True,
 			)
 
 	@override

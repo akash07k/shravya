@@ -95,7 +95,7 @@ class TestSettingsPanel(unittest.TestCase):
 			"config": module("config", post_configProfileSwitch=self.profile_switch),
 			"core": module("core"),
 			"globalPluginHandler": module(
-				"globalPluginHandler", GlobalPlugin=type("GlobalPlugin", (), {"terminate": lambda self: None})
+				"globalPluginHandler", GlobalPlugin=type("GlobalPlugin", (), {"terminate": lambda self: None}),
 			),
 			"globalVars": module("globalVars", appArgs=SimpleNamespace(secure=False)),
 			"gui": gui,
@@ -110,34 +110,34 @@ class TestSettingsPanel(unittest.TestCase):
 			"ui": module("ui"),
 			"winAPI": module("winAPI"),
 			"winAPI.secureDesktop": module(
-				"winAPI.secureDesktop", post_secureDesktopStateChange=self.secure_desktop
+				"winAPI.secureDesktop", post_secureDesktopStateChange=self.secure_desktop,
 			),
 			"wx": module("wx", Choice=Choice, SpinCtrl=Spin, Button=Button, EVT_BUTTON=object()),
 			"synthDrivers": drivers,
 			"synthDrivers.shravya": module(
-				"synthDrivers.shravya", SynthDriver=FakeSynth, _settings=self.settings
+				"synthDrivers.shravya", SynthDriver=FakeSynth, _settings=self.settings,
 			),
 			"synthDrivers.shravya._delivery_config": module(
 				"synthDrivers.shravya._delivery_config",
 				load_delivery_config=lambda: SimpleNamespace(
-					catalog_url=None, release_api=None
+					catalog_url=None, release_api=None,
 				),
 			),
 			"synthDrivers.shravya._diagnostic_input": module(
-				"synthDrivers.shravya._diagnostic_input", InputObserver=object
+				"synthDrivers.shravya._diagnostic_input", InputObserver=object,
 			),
 			"synthDrivers.shravya._diagnostic_measurements": module(
-				"synthDrivers.shravya._diagnostic_measurements", TimingEvent=tuple
+				"synthDrivers.shravya._diagnostic_measurements", TimingEvent=tuple,
 			),
 			"synthDrivers.shravya._diagnostic_report": module(
-				"synthDrivers.shravya._diagnostic_report", format_report=Mock()
+				"synthDrivers.shravya._diagnostic_report", format_report=Mock(),
 			),
 			"synthDrivers.shravya._resource_ui": module(
-				"synthDrivers.shravya._resource_ui", ResourceSetup=Mock()
+				"synthDrivers.shravya._resource_ui", ResourceSetup=Mock(),
 			),
 			"synthDrivers.shravya._update_ui": module("synthDrivers.shravya._update_ui", Updater=Mock()),
 			"synthDriverHandler": module(
-				"synthDriverHandler", getSynth=self.current, synthChanged=self.synth_changed
+				"synthDriverHandler", getSynth=self.current, synthChanged=self.synth_changed,
 			),
 		}
 		patcher = patch.dict(sys.modules, modules)
@@ -190,7 +190,7 @@ class TestSettingsPanel(unittest.TestCase):
 		self.profile_switch.unregister.assert_called_once_with(handler)
 		self.synth_changed.unregister.assert_called_once_with(self.synth_changed.register.call_args.args[0])
 		self.secure_desktop.unregister.assert_called_once_with(
-			self.secure_desktop.register.call_args.args[0]
+			self.secure_desktop.register.call_args.args[0],
 		)
 
 	def test_setup_button_is_disabled_when_delivery_configuration_failed(self):

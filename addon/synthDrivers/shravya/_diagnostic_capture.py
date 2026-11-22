@@ -13,7 +13,10 @@ from ._loopback import AudioFormat, capture_packets
 
 class DiagnosticCapture:
 	def __init__(
-		self, endpoint_id: str | None, on_ready: Callable[[str], None], on_error: Callable[[Exception], None]
+		self,
+		endpoint_id: str | None,
+		on_ready: Callable[[str], None],
+		on_error: Callable[[Exception], None],
 	) -> None:
 		super().__init__()
 		self._endpoint_id = endpoint_id
@@ -53,7 +56,9 @@ class DiagnosticCapture:
 	def _ready(self, format: AudioFormat, actual_id: str) -> None:
 		self._format = format
 		self._onset = OutputOnset(
-			sample_rate=format.sample_rate, channels=format.channels, encoding=format.encoding
+			sample_rate=format.sample_rate,
+			channels=format.channels,
+			encoding=format.encoding,
 		)
 		if not self._stop.is_set():
 			self._on_ready(actual_id)

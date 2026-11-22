@@ -69,7 +69,7 @@ class TestUpdateInstall(unittest.TestCase):
 			"wx": self.wx,
 			"logHandler": module("logHandler", log=Mock()),
 			"systemUtils": module(
-				"systemUtils", ExecAndPump=lambda func, *args: types.SimpleNamespace(funcRes=func(*args))
+				"systemUtils", ExecAndPump=lambda func, *args: types.SimpleNamespace(funcRes=func(*args)),
 			),
 		}
 		patcher = patch.dict(sys.modules, modules)

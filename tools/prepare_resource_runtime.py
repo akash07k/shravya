@@ -47,6 +47,7 @@ def prepare_runtime(
 			if not path.is_file() or path.stat().st_size == 0:
 				raise FileNotFoundError(f"Runtime is missing a nonempty file: {name}")
 		_ = (stage / "build-inputs.json").write_text(
-			json.dumps(inputs, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+			json.dumps(inputs, indent=2, ensure_ascii=False) + "\n",
+			encoding="utf-8",
 		)
 		_ = stage.rename(destination)

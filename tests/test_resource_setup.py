@@ -100,7 +100,7 @@ class TestResourceSetup(unittest.TestCase):
 			url = self.component_archive(f"{kind}.zip", kind, version)
 			stages = []
 			self.setup.prepare_component(
-				url, self.config, kind, version, lambda stage, done, total: stages.append(stage)
+				url, self.config, kind, version, lambda stage, done, total: stages.append(stage),
 			)
 			self.assertEqual(set(stages), {"download", "extract"})
 			with patch.object(self.setup, "download", side_effect=AssertionError("unexpected download")):
@@ -407,7 +407,7 @@ class TestResourceSetup(unittest.TestCase):
 				with patch.object(self.setup, "download", side_effect=AssertionError("unexpected download")):
 					with self.assertRaises(ValueError):
 						self.setup.prepare_split(
-							url, self.config, "1.0.0", lambda *args: None
+							url, self.config, "1.0.0", lambda *args: None,
 						)
 		self.assertFalse((self.config / "shravya").exists())
 

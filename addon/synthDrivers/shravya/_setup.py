@@ -80,7 +80,9 @@ def prepare_addon_resources(
 
 
 def check_resource_update(
-	catalog_url: str, config_directory: Path, addon_version: str
+	catalog_url: str,
+	config_directory: Path,
+	addon_version: str,
 ) -> ResourceUpdate | None:
 	runtime_dir, model_dir = resource_directories(config_directory)
 	validate_resources(runtime_dir, model_dir)
@@ -154,7 +156,8 @@ def prepare_component(
 		source.unlink()
 	except OSError:
 		_LOG.warning(
-			"Resource pack installed, but the downloaded archive could not be removed", exc_info=True
+			"Resource pack installed, but the downloaded archive could not be removed",
+			exc_info=True,
 		)
 		return False
 	return True

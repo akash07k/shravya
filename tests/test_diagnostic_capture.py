@@ -15,7 +15,7 @@ def load_capture():
 	package = ModuleType("shravya_capture_test")
 	package.__path__ = [str(DRIVER)]
 	spec = importlib.util.spec_from_file_location(
-		"shravya_capture_test._diagnostic_capture", DRIVER / "_diagnostic_capture.py"
+		"shravya_capture_test._diagnostic_capture", DRIVER / "_diagnostic_capture.py",
 	)
 	module = importlib.util.module_from_spec(spec)
 	with patch.dict(sys.modules, {"shravya_capture_test": package}):
@@ -67,7 +67,7 @@ class TestDiagnosticCapture(unittest.TestCase):
 		package = ModuleType("shravya_capture_test")
 		package.__path__ = [str(DRIVER)]
 		spec = importlib.util.spec_from_file_location(
-			"shravya_capture_test._diagnostic_report", DRIVER / "_diagnostic_report.py"
+			"shravya_capture_test._diagnostic_report", DRIVER / "_diagnostic_report.py",
 		)
 		report_module = importlib.util.module_from_spec(spec)
 		report_module.__dict__["_"] = lambda value: value

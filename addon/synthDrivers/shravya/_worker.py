@@ -20,7 +20,13 @@ class _Engine(Protocol):
 	def sample_rate(self) -> int: ...
 
 	def stream(
-		self, text: str, *, speed: float, steps: int, seed: int, voice: str = "noa"
+		self,
+		text: str,
+		*,
+		speed: float,
+		steps: int,
+		seed: int,
+		voice: str = "noa",
 	) -> Iterator[bytes]: ...
 	def close(self) -> None: ...
 
@@ -106,7 +112,7 @@ class SpeechWorker:
 				self._speaking = True
 				self._record("queued", self._serial)
 				self._jobs.put(
-					_Job(self._epoch, self._serial, tuple(parts), speed, steps, seed, voice, method, pitch)
+					_Job(self._epoch, self._serial, tuple(parts), speed, steps, seed, voice, method, pitch),
 				)
 
 	def cancel(self) -> None:
@@ -279,7 +285,10 @@ class SpeechWorker:
 			elif part[0] == "index":
 				index = part[1]
 				if not self._feed(
-					player, job.epoch, b"\0\0", lambda index=index: self._notify_index(job.epoch, index)
+					player,
+					job.epoch,
+					b"\0\0",
+					lambda index=index: self._notify_index(job.epoch, index),
 				):
 					return
 			else:

@@ -54,7 +54,7 @@ class _UpdateDialog(gui.message.MessageDialog):
 		super().__init__(  # pyright: ignore[reportUnknownMemberType]
 			parent=None,
 			message=_("Version {version} is available.\n\nDownload and install it now?").format(
-				version=update.version
+				version=update.version,
 			),
 			title=_("Shravya update"),
 			buttons=gui.message.DefaultButtonSet.YES_NO,

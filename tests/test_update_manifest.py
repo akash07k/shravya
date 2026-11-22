@@ -23,15 +23,19 @@ class TestUpdateManifest(unittest.TestCase):
 			notes = '## Changes\n\n- "Quoted" text, a backslash \\ and café.\n- Another change.'
 			changelog.write_text(notes + "\n", encoding="utf-8")
 			result = subprocess.run(
-				[sys.executable, "-B", str(SCRIPT), "1.2.3", str(changelog), str(output),
-				 "--resource-catalog", "https://example.test/resources.toml"],
+				[
+        sys.executable, "-B", str(SCRIPT), "1.2.3", str(changelog), str(output),
+        "--resource-catalog", "https://example.test/resources.toml",
+    ],
 				capture_output=True, text=True, check=False,
 			)
 			self.assertEqual(result.returncode, 0, result.stderr)
-			self.assertEqual(tomllib.loads(output.read_text(encoding="utf-8")), {
-				"version": "1.2.3", "changes": notes,
-				"resource_catalog": "https://example.test/resources.toml",
-			})
+			self.assertEqual(
+       tomllib.loads(output.read_text(encoding="utf-8")), {
+        "version": "1.2.3", "changes": notes,
+        "resource_catalog": "https://example.test/resources.toml",
+       },
+   )
 
 	def test_invalid_version_and_missing_changelog_fail_without_manifest(self):
 		with tempfile.TemporaryDirectory() as directory:
@@ -48,8 +52,10 @@ class TestUpdateManifest(unittest.TestCase):
 					self.assertNotEqual(result.returncode, 0)
 					self.assertFalse(output.exists())
 			result = subprocess.run(
-				[sys.executable, "-B", str(SCRIPT), "1.2.3", str(changelog), str(output),
-				 "--resource-catalog", "file:///local.toml"],
+				[
+        sys.executable, "-B", str(SCRIPT), "1.2.3", str(changelog), str(output),
+        "--resource-catalog", "file:///local.toml",
+    ],
 				capture_output=True, text=True, check=False,
 			)
 			self.assertNotEqual(result.returncode, 0)

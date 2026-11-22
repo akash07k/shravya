@@ -185,7 +185,7 @@ class TestSpeechWorker(unittest.TestCase):
 		self.assertTrue(self.player.wait_for_feeds(6))
 		feeds = self.player.feeds
 		self.assertEqual(
-			[item[0] for item in feeds], [b"first", b"\0\0", bytes(20), b"second", b"\0\0", b"\0\0"]
+			[item[0] for item in feeds], [b"first", b"\0\0", bytes(20), b"second", b"\0\0", b"\0\0"],
 		)
 		self.assertEqual(self.indices, [])
 		self.assertEqual(self.done, [])
@@ -239,7 +239,7 @@ class TestSpeechWorker(unittest.TestCase):
 		stopped = threading.Thread(target=self.worker.cancel)
 		queued = threading.Event()
 		new_speech = threading.Thread(
-			target=lambda: (self.worker.speak(["new"], speed=1.0, steps=4), queued.set())
+			target=lambda: (self.worker.speak(["new"], speed=1.0, steps=4), queued.set()),
 		)
 		try:
 			stopped.start()
@@ -268,7 +268,7 @@ class TestSpeechWorker(unittest.TestCase):
 			return player
 
 		worker = self.module.SpeechWorker(
-			engine_factory, player_factory, lambda index: None, lambda: None, self.errors.append
+			engine_factory, player_factory, lambda index: None, lambda: None, self.errors.append,
 		)
 		self.addCleanup(worker.close)
 		self.addCleanup(ready.set)
@@ -306,7 +306,7 @@ class TestSpeechWorker(unittest.TestCase):
 
 		player = TrimmingPlayer()
 		worker = self.module.SpeechWorker(
-			FakeEngine, lambda rate: player, lambda index: None, lambda: None, self.errors.append
+			FakeEngine, lambda rate: player, lambda index: None, lambda: None, self.errors.append,
 		)
 		self.addCleanup(worker.close)
 		worker.speak([("break", 10), "speech"], speed=1.0, steps=4)
@@ -344,7 +344,7 @@ class TestSpeechWorker(unittest.TestCase):
 				raise TimeoutError("test did not release error handling")
 
 		worker = self.module.SpeechWorker(
-			lambda: engine, lambda rate: FakePlayer(), lambda index: None, lambda: None, on_error
+			lambda: engine, lambda rate: FakePlayer(), lambda index: None, lambda: None, on_error,
 		)
 		worker.speak(["fail"], speed=1.0, steps=4)
 		closer = threading.Thread(target=lambda: (worker.close(), closed.set()))
@@ -375,7 +375,7 @@ class TestSpeechWorker(unittest.TestCase):
 			return player
 
 		worker = self.module.SpeechWorker(
-			engine_factory, player_factory, lambda index: None, lambda: None, self.errors.append
+			engine_factory, player_factory, lambda index: None, lambda: None, self.errors.append,
 		)
 		self.addCleanup(worker.close)
 		self.addCleanup(ready.set)
@@ -511,7 +511,7 @@ class TestSpeechWorker(unittest.TestCase):
 			return FakeEngine()
 
 		worker = self.module.SpeechWorker(
-			FakeEngine, lambda rate: player, lambda index: None, lambda: None, self.errors.append
+			FakeEngine, lambda rate: player, lambda index: None, lambda: None, self.errors.append,
 		)
 		self.addCleanup(worker.close)
 		self.addCleanup(ready.set)

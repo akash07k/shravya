@@ -160,11 +160,14 @@ def build(
 				"rustc": rustc,
 				"cargo": cargo,
 				"msvc": msvc,
-			}
+			},
 		)
 		stage = work / "resources"
 		prepare_resource_runtime.prepare_runtime(
-			bluetts, stage / "python", lambda target: install_runtime(python, wheel, target), inputs
+			bluetts,
+			stage / "python",
+			lambda target: install_runtime(python, wheel, target),
+			inputs,
 		)
 		build_resource_pack.build_component(stage, output, "runtime", f"runtime-{uuid.uuid4().hex}")
 

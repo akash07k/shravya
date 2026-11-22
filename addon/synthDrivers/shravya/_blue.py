@@ -55,7 +55,13 @@ class _Model(Protocol):
 	tts: _Core
 
 	def stream(
-		self, text: str, *, lang: str, speed: float, total_step: int, style: object | None
+		self,
+		text: str,
+		*,
+		lang: str,
+		speed: float,
+		total_step: int,
+		style: object | None,
 	) -> Iterator[NDArray[np.float32]]: ...
 
 
@@ -65,7 +71,12 @@ class _Factory(Protocol):
 
 class _LatentMask(Protocol):
 	def __call__(
-		self, lengths: NDArray[np.int64], chunk_size: int, compression: int, *, max_len: int
+		self,
+		lengths: NDArray[np.int64],
+		chunk_size: int,
+		compression: int,
+		*,
+		max_len: int,
 	) -> NDArray[np.float32]: ...
 
 
@@ -76,7 +87,7 @@ def validate_resources(resources: Path, model_resources: Path) -> None:
 		and (model_resources / "bluev3_onnx" / "voices" / "noa.json").is_file()
 	):
 		raise FileNotFoundError(
-			f"BlueV3 resources are incomplete: runtime={resources}, model={model_resources}"
+			f"BlueV3 resources are incomplete: runtime={resources}, model={model_resources}",
 		)
 
 
@@ -135,12 +146,15 @@ class BlueEngine:
 			factory = cast(_Factory, getattr(blue, "BlueTTS"))
 			self._load_style = cast(Callable[[list[str]], object], getattr(blue, "load_voice_style"))
 			self._latent_frames = cast(
-				Callable[[float, int, int, int], int], getattr(blue, "latent_frames_for_duration")
+				Callable[[float, int, int, int], int],
+				getattr(blue, "latent_frames_for_duration"),
 			)
 			self._latent_mask = cast(_LatentMask, getattr(blue, "get_latent_mask"))
 			try:
 				self._model = factory(
-					onnx_dir=str(model_dir / "onnx"), style_json=str(voice), providers=providers
+					onnx_dir=str(model_dir / "onnx"),
+					style_json=str(voice),
+					providers=providers,
 				)
 			except self._ort_errors as error:
 				if use_cuda and _is_cuda_failure(error):
@@ -165,7 +179,13 @@ class BlueEngine:
 		return self._model.sample_rate
 
 	def stream(
-		self, text: str, *, speed: float, steps: int, seed: int = 0, voice: str = "noa"
+		self,
+		text: str,
+		*,
+		speed: float,
+		steps: int,
+		seed: int = 0,
+		voice: str = "noa",
 	) -> Iterator[bytes]:
 		import numpy as np
 
@@ -187,12 +207,18 @@ class BlueEngine:
 		def sample(duration: NDArray[np.float32]) -> tuple[NDArray[np.float32], NDArray[np.float32]]:
 			wav_lengths = (duration * core.sample_rate).astype(np.int64)
 			length = self._latent_frames(
-				float(duration.max()), core.sample_rate, core.base_chunk_size, core.chunk_compress_factor
+				float(duration.max()),
+				core.sample_rate,
+				core.base_chunk_size,
+				core.chunk_compress_factor,
 			)
 			dimension = core.ldim * core.chunk_compress_factor
 			noise = random.randn(len(duration), dimension, length).astype(np.float32)
 			mask = self._latent_mask(
-				wav_lengths, core.base_chunk_size, core.chunk_compress_factor, max_len=length
+				wav_lengths,
+				core.base_chunk_size,
+				core.chunk_compress_factor,
+				max_len=length,
 			)
 			return noise * mask, mask
 
@@ -200,7 +226,11 @@ class BlueEngine:
 		core.sample_noisy_latent = sample
 		try:
 			for audio in self._model.stream(
-				text, lang="en", speed=speed, total_step=steps, style=self._style
+				text,
+				lang="en",
+				speed=speed,
+				total_step=steps,
+				style=self._style,
 			):
 				if audio.ndim != 1 or audio.size == 0 or not np.isfinite(audio).all():
 					raise ValueError("BlueV3 returned empty, non-mono, or non-finite audio")

@@ -75,7 +75,7 @@ class TestDiagnosticPlugin(unittest.TestCase):
 		)
 		self.load_delivery = Mock(return_value=self.delivery)
 		self.ui = module(
-			"ui", message=Mock(), browseableMessage=Mock(), isRunningOnSecureDesktop=Mock(return_value=False)
+			"ui", message=Mock(), browseableMessage=Mock(), isRunningOnSecureDesktop=Mock(return_value=False),
 		)
 		self.speech = module("speech", speakMessage=Mock())
 		self.secure_desktop = Hook()
@@ -109,30 +109,30 @@ class TestDiagnosticPlugin(unittest.TestCase):
 			"synthDrivers": module("synthDrivers"),
 			"synthDrivers.shravya": driver,
 			"synthDrivers.shravya._delivery_config": module(
-				"synthDrivers.shravya._delivery_config", load_delivery_config=self.load_delivery
+				"synthDrivers.shravya._delivery_config", load_delivery_config=self.load_delivery,
 			),
 			"synthDrivers.shravya._diagnostic_capture": module(
-				"synthDrivers.shravya._diagnostic_capture", DiagnosticCapture=self.capture_factory
+				"synthDrivers.shravya._diagnostic_capture", DiagnosticCapture=self.capture_factory,
 			),
 			"synthDrivers.shravya._diagnostic_input": module(
-				"synthDrivers.shravya._diagnostic_input", InputObserver=self.input_factory
+				"synthDrivers.shravya._diagnostic_input", InputObserver=self.input_factory,
 			),
 			"synthDrivers.shravya._diagnostic_measurements": module(
-				"synthDrivers.shravya._diagnostic_measurements", TimingEvent=tuple
+				"synthDrivers.shravya._diagnostic_measurements", TimingEvent=tuple,
 			),
 			"synthDrivers.shravya._diagnostic_report": module(
-				"synthDrivers.shravya._diagnostic_report", format_report=lambda events: "report"
+				"synthDrivers.shravya._diagnostic_report", format_report=lambda events: "report",
 			),
 			"synthDrivers.shravya._resource_ui": module(
-				"synthDrivers.shravya._resource_ui", ResourceSetup=self.resource_factory
+				"synthDrivers.shravya._resource_ui", ResourceSetup=self.resource_factory,
 			),
 			"synthDrivers.shravya._update_ui": module(
-				"synthDrivers.shravya._update_ui", Updater=self.updater_factory
+				"synthDrivers.shravya._update_ui", Updater=self.updater_factory,
 			),
 			"ui": self.ui,
 			"winAPI": module("winAPI"),
 			"winAPI.secureDesktop": module(
-				"winAPI.secureDesktop", post_secureDesktopStateChange=self.secure_desktop
+				"winAPI.secureDesktop", post_secureDesktopStateChange=self.secure_desktop,
 			),
 			"wx": module("wx"),
 		}

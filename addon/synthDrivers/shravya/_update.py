@@ -43,7 +43,8 @@ def _asset_url(assets: list[object], name: str) -> str:
 
 def check_release(url: str, current_version: str) -> Update | None:
 	request = Request(
-		url, headers={"User-Agent": "Shravya NVDA add-on", "Accept": "application/vnd.github+json"}
+		url,
+		headers={"User-Agent": "Shravya NVDA add-on", "Accept": "application/vnd.github+json"},
 	)
 	with urlopen(request, timeout=30) as response:
 		data = cast(object, json.load(response))

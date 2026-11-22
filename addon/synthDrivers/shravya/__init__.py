@@ -37,7 +37,11 @@ addonHandler.initTranslation()
 class _MonoWavePlayer(nvwave.WavePlayer):
 	@override
 	def setVolume(
-		self, *, all: float | None = None, left: float | None = None, right: float | None = None
+		self,
+		*,
+		all: float | None = None,
+		left: float | None = None,
+		right: float | None = None,
 	) -> None:
 		if all == 0.0 and left is None and right is None:
 			# NVDA's all=0 path incorrectly rejects mono output after setting channel 0.
@@ -69,7 +73,8 @@ class SynthDriver(synthDriverHandler.SynthDriver):
 		addon = cast("Addon", addonHandler.getCodeAddon())  # pyright: ignore[reportUnknownMemberType]
 		self._addon_version = cast(str, addon.manifest["version"])
 		self._resources, self._model_resources = resource_directories(
-			self._config_dir, addon_version=self._addon_version
+			self._config_dir,
+			addon_version=self._addon_version,
 		)
 		validate_resources(self._resources, self._model_resources)
 		self._voice = "noa"
@@ -103,7 +108,10 @@ class SynthDriver(synthDriverHandler.SynthDriver):
 		def create_engine(cuda: bool) -> BlueEngine:
 			if fallback_voices:
 				return BlueEngine(
-					self._resources, use_cuda=cuda, model_resources=model, fallback_voices=fallback_voices
+					self._resources,
+					use_cuda=cuda,
+					model_resources=model,
+					fallback_voices=fallback_voices,
 				)
 			return BlueEngine(self._resources, use_cuda=cuda, model_resources=model)
 
@@ -124,7 +132,8 @@ class SynthDriver(synthDriverHandler.SynthDriver):
 
 	def _recover_cuda(self, error: CudaSynthesisError) -> BlueEngine:
 		log.warning(
-			"CUDA synthesis failed; using CPU for Shravya", exc_info=(type(error), error, error.__traceback__)
+			"CUDA synthesis failed; using CPU for Shravya",
+			exc_info=(type(error), error, error.__traceback__),
 		)
 		core.callLater(0, self._notify_cuda_fallback)  # pyright: ignore[reportUnknownMemberType]
 		return self._load_engine(False)

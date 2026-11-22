@@ -115,7 +115,10 @@ def _promote_pending(config_directory: Path, pending: Path) -> None:
 					_validate_pair(config_directory, *target)
 				else:
 					activate(
-						config_directory, *target, RESOURCE_INTERFACE, expected=(previous[0], previous[1])
+						config_directory,
+						*target,
+						RESOURCE_INTERFACE,
+						expected=(previous[0], previous[1]),
 					)
 				pending.unlink()
 		except (OSError, ValueError, RuntimeError):

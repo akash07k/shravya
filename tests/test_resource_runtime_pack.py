@@ -48,7 +48,7 @@ class TestRuntimePack(unittest.TestCase):
 				return_value=resource_sources.BlueSource("example/BlueTTS", "feature"),
 			),
 			patch.object(
-				resource_sources, "github_revision", side_effect=["a" * 40, "b" * 40]
+				resource_sources, "github_revision", side_effect=["a" * 40, "b" * 40],
 			) as resolve,
 			patch.object(resource_sources, "download_source", side_effect=source),
 			patch.object(build_resource_runtime, "build_environment", return_value=self.root / "python.exe"),

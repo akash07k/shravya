@@ -93,8 +93,10 @@ class TestUpdateCheck(unittest.TestCase):
 				capture_output=True, text=True, check=True,
 			)
 			subprocess.run(
-				[sys.executable, "-B", str(root / "tools" / "build_update_manifest.py"),
-				 "1.2.3", str(changelog), str(output), "--resource-catalog", read.stdout.strip()],
+				[
+        sys.executable, "-B", str(root / "tools" / "build_update_manifest.py"),
+        "1.2.3", str(changelog), str(output), "--resource-catalog", read.stdout.strip(),
+    ],
 				check=True,
 			)
 			self.server.manifest = output.read_bytes()

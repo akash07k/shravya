@@ -113,7 +113,7 @@ class TestUpdateUI(unittest.TestCase):
 			"wx": self.wx,
 			"logHandler": module("logHandler", log=Mock()),
 			"update_ui_test._update_install": module(
-				"update_ui_test._update_install", install_update=self.install
+				"update_ui_test._update_install", install_update=self.install,
 			),
 		}
 		patcher = patch.dict(sys.modules, modules)
@@ -302,23 +302,27 @@ class TestUpdateUI(unittest.TestCase):
 		gui.addonGui = addon_gui
 		handler = sys.modules["addonHandler"]
 		handler.getAvailableAddons = lambda: iter(())
-		handler.AddonBundle = Mock(return_value=types.SimpleNamespace(
-			manifest={"name": "shravya", "version": "1.2.3"}
-		))
+		handler.AddonBundle = Mock(
+      return_value=types.SimpleNamespace(
+       manifest={"name": "shravya", "version": "1.2.3"},
+      ),
+  )
 		dialog = Mock()
 		dialog.Update.return_value = (True, False)
 		self.wx.PD_CAN_ABORT = 32
 		self.wx.PD_ELAPSED_TIME = 64
 		self.wx.ProgressDialog = Mock(return_value=dialog)
 		exec_module = module(
-			"systemUtils", ExecAndPump=lambda func, *args: types.SimpleNamespace(funcRes=func(*args))
+			"systemUtils", ExecAndPump=lambda func, *args: types.SimpleNamespace(funcRes=func(*args)),
 		)
 		sys.modules.pop("update_ui_test._update_install")
-		with patch.dict(sys.modules, {
-			"gui.addonGui": addon_gui,
-			"systemUtils": exec_module,
-			"NVDAState": module("NVDAState", WritePaths=module("WritePaths", configDir=directory.name)),
-		}):
+		with patch.dict(
+      sys.modules, {
+       "gui.addonGui": addon_gui,
+       "systemUtils": exec_module,
+       "NVDAState": module("NVDAState", WritePaths=module("WritePaths", configDir=directory.name)),
+      },
+  ):
 			installer = importlib.import_module("update_ui_test._update_install")
 			installer.plan_addon_resources = Mock(return_value=types.SimpleNamespace(missing=()))
 			installer.prepare_addon_resources = Mock(return_value=True)

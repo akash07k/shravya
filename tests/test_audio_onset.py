@@ -27,7 +27,7 @@ class TestAudioOnset(unittest.TestCase):
 
 	def test_silence_and_short_integer_samples(self):
 		self.assertIsNone(
-			self.onset(struct.pack("<4h", 0, 1, -1, 0), channels=2, encoding="pcm16", level=0.01)
+			self.onset(struct.pack("<4h", 0, 1, -1, 0), channels=2, encoding="pcm16", level=0.01),
 		)
 
 	def test_signed_integer_formats_handle_minimum_samples(self):
@@ -54,7 +54,7 @@ class TestPacketOnset(unittest.TestCase):
 	def test_timestamp_uses_packet_clock_and_first_loud_frame(self):
 		self.assertIsNone(self.tracker.process(self.silence, frames=4, flags=0, qpc_ns=900_000_000))
 		self.assertEqual(
-			self.tracker.process(self.sound, frames=4, flags=0, qpc_ns=1_000_000_000), 1_002_000_000
+			self.tracker.process(self.sound, frames=4, flags=0, qpc_ns=1_000_000_000), 1_002_000_000,
 		)
 		self.assertIsNone(self.tracker.process(self.sound, frames=4, flags=0, qpc_ns=1_004_000_000))
 
@@ -62,7 +62,7 @@ class TestPacketOnset(unittest.TestCase):
 		self.assertIsNone(self.tracker.process(self.sound, frames=4, flags=0, qpc_ns=1_000_000_000))
 		self.assertIsNone(self.tracker.process(b"", frames=4, flags=2, qpc_ns=1_004_000_000))
 		self.assertEqual(
-			self.tracker.process(self.sound, frames=4, flags=0, qpc_ns=1_008_000_000), 1_010_000_000
+			self.tracker.process(self.sound, frames=4, flags=0, qpc_ns=1_008_000_000), 1_010_000_000,
 		)
 
 	def test_invalid_packets_invalidate_the_silence_baseline(self):

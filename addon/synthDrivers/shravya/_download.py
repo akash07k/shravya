@@ -91,7 +91,8 @@ def download(url: str, archive: Path, progress: Callable[[int, int], None]) -> N
 			if mode == "wb":
 				if etag.startswith('"') and etag.endswith('"'):
 					_ = metadata.write_text(
-						json.dumps({"url": url, "etag": etag, "total": total}), encoding="utf-8"
+						json.dumps({"url": url, "etag": etag, "total": total}),
+						encoding="utf-8",
 					)
 				else:
 					metadata.unlink(missing_ok=True)

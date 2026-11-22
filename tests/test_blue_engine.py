@@ -144,14 +144,14 @@ class TestBlueEngine(unittest.TestCase):
 			engine.close()
 		self.assertEqual(self.factory_calls[0]["onnx_dir"], str(model_root / "bluev3_onnx" / "onnx"))
 		self.assertEqual(
-			self.factory_calls[0]["style_json"], str(model_root / "bluev3_onnx" / "voices" / "noa.json")
+			self.factory_calls[0]["style_json"], str(model_root / "bluev3_onnx" / "voices" / "noa.json"),
 		)
 
 	def test_queued_voice_removed_by_model_update_uses_default(self):
 		model = FakeModel(["CPUExecutionProvider"])
 		with self.fake_imports(model):
 			engine = self.engine_module.BlueEngine(
-				self.root, use_cuda=False, model_resources=self.root, fallback_voices={"adam"}
+				self.root, use_cuda=False, model_resources=self.root, fallback_voices={"adam"},
 			)
 			try:
 				list(engine.stream("test", speed=1, steps=4, voice="adam"))
@@ -179,7 +179,7 @@ class TestBlueEngine(unittest.TestCase):
 	def test_cuda_registration_failure_in_one_stage_is_not_ignored(self):
 		model = FakeModel(["CUDAExecutionProvider", "CPUExecutionProvider"])
 		model.tts.vocoder_ort = SimpleNamespace(
-			get_providers=lambda: ["CPUExecutionProvider"], disable_fallback=unittest.mock.Mock()
+			get_providers=lambda: ["CPUExecutionProvider"], disable_fallback=unittest.mock.Mock(),
 		)
 		for directory in ("cu13/bin/x86_64", "cudnn/bin"):
 			(self.root / "python" / "nvidia" / directory).mkdir(parents=True)

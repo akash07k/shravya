@@ -57,12 +57,12 @@ class TestDiagnosticInput(unittest.TestCase):
 		self.events = []
 		self.scripts = SimpleNamespace(controlled=lambda gesture: None, toggle=lambda gesture: None)
 		self.observer = self.module.InputObserver(
-			self.events.append, self.scripts.controlled, self.scripts.toggle
+			self.events.append, self.scripts.controlled, self.scripts.toggle,
 		)
 
 	def raw(self, *, pressed=True, injected=False, vk=65):
 		return self.hooks.decide_handleRawKey.decide(
-			vkCode=vk, scanCode=30, extended=False, pressed=pressed, injected=injected
+			vkCode=vk, scanCode=30, extended=False, pressed=pressed, injected=injected,
 		)
 
 	def gesture(self, gesture):

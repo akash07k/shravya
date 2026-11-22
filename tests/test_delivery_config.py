@@ -40,10 +40,12 @@ class TestDeliveryConfig(unittest.TestCase):
 
 	def test_default_config_uses_github_endpoints(self):
 		config = self.config.load_delivery_config()
-		self.assertEqual(config, (
-			"https://raw.githubusercontent.com/akash07k/shravya/main/catalogs/current.toml",
-			"https://api.github.com/repos/akash07k/shravya/releases/latest",
-		))
+		self.assertEqual(
+      config, (
+       "https://raw.githubusercontent.com/akash07k/shravya/main/catalogs/current.toml",
+       "https://api.github.com/repos/akash07k/shravya/releases/latest",
+      ),
+  )
 
 	def test_invalid_values_and_missing_config_are_reported(self):
 		for value in ('"file:///tmp/catalog"', "17", '"https://"'):

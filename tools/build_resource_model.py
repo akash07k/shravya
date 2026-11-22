@@ -20,13 +20,17 @@ def build_environment(work: Path, name: str) -> Path:
 	python = environment / "Scripts" / "python.exe"
 	_ = subprocess.run(["uv", "venv", "--python", sys.executable, str(environment)], check=True)
 	_ = subprocess.run(
-		["uv", "pip", "install", "--python", str(python), "-r", str(BUILD_REQUIREMENTS)], check=True
+		["uv", "pip", "install", "--python", str(python), "-r", str(BUILD_REQUIREMENTS)],
+		check=True,
 	)
 	return python
 
 
 def quantize_model(
-	work: Path, source: Path, destination: Path, bluetts: Path | resource_sources.GitSource
+	work: Path,
+	source: Path,
+	destination: Path,
+	bluetts: Path | resource_sources.GitSource,
 ) -> None:
 	python = build_environment(work, "quantizer")
 	if isinstance(bluetts, Path):
@@ -42,7 +46,8 @@ def quantize_model(
 			shutil.copyfileobj(response, output)
 	script = "import runpy, sys; runpy.run_path(sys.argv[1])['quantize_vector_estimator'](*sys.argv[2:])"
 	_ = subprocess.run(
-		[str(python), "-B", "-c", script, str(cpu_module), str(source), str(destination)], check=True
+		[str(python), "-B", "-c", script, str(cpu_module), str(source), str(destination)],
+		check=True,
 	)
 
 
@@ -90,7 +95,9 @@ def build(
 					saved_blue = source_output / "bluetts"
 					if not saved_blue.exists():
 						downloaded_blue = resource_sources.download_source(
-							work, bluetts.repository, bluetts.revision
+							work,
+							bluetts.repository,
+							bluetts.revision,
 						)
 						resource_sources.preserve_source(downloaded_blue, saved_blue, move=True)
 					bluetts = saved_blue
@@ -98,7 +105,8 @@ def build(
 				if blue_source is not None:
 					raise ValueError("Choose either local or upstream BlueTTS sources")
 				int8_info["bluetts_source"] = resource_sources.local_description(
-					bluetts_dir, bluetts_description
+					bluetts_dir,
+					bluetts_description,
 				)
 				bluetts = bluetts_dir
 
@@ -110,7 +118,8 @@ def build(
 		prepare_resource_model.prepare_model(bundle, stage / "bluev3_onnx", quantize)
 		info = {"model_source": source, "int8": int8_info}
 		_ = (stage / "bluev3_onnx" / "build-inputs.json").write_text(
-			json.dumps(info, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+			json.dumps(info, indent=2, ensure_ascii=False) + "\n",
+			encoding="utf-8",
 		)
 		build_resource_pack.build_component(stage, output, "model", f"model-{uuid.uuid4().hex}")
 		if downloaded_model and source_output is not None:
@@ -127,7 +136,7 @@ if __name__ == "__main__":
 	_ = parser.add_argument("--bluetts-description", help="identity of the local BlueTTS source")
 	args = parser.parse_args()
 	if args.source_choice == "latest" and any(
-		(args.bundle, args.source, args.bluetts_dir, args.bluetts_description)
+		(args.bundle, args.source, args.bluetts_dir, args.bluetts_description),
 	):
 		parser.error("Local source options require --source-choice local")
 	if args.source_choice == "local":

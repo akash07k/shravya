@@ -92,11 +92,20 @@ if TYPE_CHECKING:
 		FD_FILE_MUST_EXIST: int
 
 		def SingleChoiceDialog(
-			self, parent: object, message: str, caption: str, choices: list[str]
+			self,
+			parent: object,
+			message: str,
+			caption: str,
+			choices: list[str],
 		) -> _ChoiceDialog: ...
 		def FileDialog(self, parent: object, message: str, *, wildcard: str, style: int) -> _FileDialog: ...
 		def ProgressDialog(
-			self, title: str, message: str, *, style: int, parent: object
+			self,
+			title: str,
+			message: str,
+			*,
+			style: int,
+			parent: object,
 		) -> _ProgressDialog: ...
 		def CallAfter(self, callback: Callable[..., None], *args: object) -> None: ...
 		def CallLater(self, delay: int, callback: Callable[..., None], *args: object) -> _Timer: ...
@@ -152,7 +161,8 @@ class ResourceSetup:
 			try:
 				addon = cast("Addon", addonHandler.getCodeAddon())  # pyright: ignore[reportUnknownMemberType]
 				_directories = resource_directories(
-					config_dir, addon_version=cast(str, addon.manifest["version"])
+					config_dir,
+					addon_version=cast(str, addon.manifest["version"]),
 				)
 			except FileNotFoundError:
 				pass
@@ -161,7 +171,7 @@ class ResourceSetup:
 			if take_pending_failure(config_dir):
 				_ignored = _message_box(
 					_(
-						"Shravya could not activate the prepared resources. The previous resources remain selected."
+						"Shravya could not activate the prepared resources. The previous resources remain selected.",
 					),
 					_("Shravya resources"),
 					wx.OK | wx.ICON_ERROR,
@@ -214,7 +224,9 @@ class ResourceSetup:
 		except (OSError, ValueError, KeyError, addonHandler.AddonError):
 			log.error("Could not read Shravya resource selection", exc_info=True)
 			_ignored = self._message(
-				_("Could not read the Shravya resource selection."), wx.OK | wx.ICON_ERROR, parent
+				_("Could not read the Shravya resource selection."),
+				wx.OK | wx.ICON_ERROR,
+				parent,
 			)
 			return None
 		return True
@@ -410,14 +422,17 @@ class ResourceSetup:
 				)
 			elif resource_update is not None:
 				update_result = ExecAndPump(
-					prepare_resource_update, resource_update, config_dir, progress
+					prepare_resource_update,
+					resource_update,
+					config_dir,
+					progress,
 				).funcRes
 				if update_result is None:
 					raise RuntimeError("Resource update did not return a result")
 				clean, restart = update_result
 				if not clean and restart:
 					message = _(
-						"Restart NVDA to use the new Shravya resources. A downloaded archive could not be removed."
+						"Restart NVDA to use the new Shravya resources. A downloaded archive could not be removed.",
 					)
 				elif not clean:
 					message = _("Shravya resources are ready, but a downloaded archive could not be removed.")
@@ -425,7 +440,7 @@ class ResourceSetup:
 					message = _("Restart NVDA to use the new Shravya resources.")
 				else:
 					message = _(
-						"The Shravya model update is ready and will be used on the next model reload."
+						"The Shravya model update is ready and will be used on the next model reload.",
 					)
 			else:
 				if url is None:
