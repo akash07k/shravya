@@ -1,0 +1,11 @@
+format = 1
+interface = "bluev3-v1"
+addons = ["0.1.0"]
+
+[runtime]
+id = "runtime-af57d717108e4057b49598ca4946f90e"
+url = "https://github.com/akash07k/shravya/releases/download/resources/runtime-resources-7e260b1acc6f4dc7951511743dbfca0e.zip"
+
+[model]
+id = "model-c579210e346e45299cb983182c786da7"
+url = "https://github.com/akash07k/shravya/releases/download/resources/model-resources-7e260b1acc6f4dc7951511743dbfca0e.zip"
