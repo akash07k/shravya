@@ -1,0 +1,43 @@
+name: build and publish resources
+
+on:
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: Resource packs to build
+        type: choice
+        options: [both, runtime, model]
+        required: true
+      addons:
+        description: Comma-separated compatible add-on versions
+        type: string
+        required: true
+
+concurrency:
+  group: shravya-resource-publication
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    steps:
+    - name: Require the default branch
+      run: if ($env:GITHUB_REF -ne 'refs/heads/main') { throw 'Run this workflow from main.' }
+    - uses: actions/checkout@v7
+      with:
+        ref: main
+    - uses: astral-sh/setup-uv@v10.3.3
+      with:
+        enable-cache: true
+    - name: Install build dependencies
+      run: uv sync --locked
+    - name: Build, smoke-test, and publish
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RESOURCE_KIND: ${{ inputs.kind }}
+        COMPATIBLE_ADDONS: ${{ inputs.addons }}
+        REPOSITORY: ${{ github.repository }}
+      run: uv run --no-sync python -B -m tools.publish_resources --kind "$env:RESOURCE_KIND" --addons "$env:COMPATIBLE_ADDONS" --repository "$env:REPOSITORY"
