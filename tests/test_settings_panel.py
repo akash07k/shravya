@@ -48,6 +48,18 @@ class Button:
 		self.handler = handler
 
 
+class CheckBox:
+	def __init__(self, parent, *, label):
+		self.label = label
+		self.value = False
+
+	def SetValue(self, value):
+		self.value = value
+
+	def GetValue(self):
+		return self.value
+
+
 class Helper:
 	def __init__(self, panel, *, sizer):
 		self.panel = panel
@@ -80,6 +92,8 @@ class TestSettingsPanel(unittest.TestCase):
 		self.profile_switch = SimpleNamespace(register=Mock(), unregister=Mock())
 		self.synth_changed = SimpleNamespace(register=Mock(), unregister=Mock())
 		self.secure_desktop = SimpleNamespace(register=Mock(), unregister=Mock())
+		self.cleanup = SimpleNamespace(cleanup_enabled=Mock(return_value=False), set_cleanup_enabled=Mock())
+		self.addon = SimpleNamespace(loadModule=Mock(return_value=self.cleanup))
 		self.categories = []
 		dialogs = module(
 			"gui.settingsDialogs",
@@ -91,7 +105,12 @@ class TestSettingsPanel(unittest.TestCase):
 		drivers = module("synthDrivers")
 		drivers.__path__ = []
 		modules = {
-			"addonHandler": module("addonHandler", initTranslation=lambda: None),
+			"addonHandler": module(
+				"addonHandler",
+				Addon=SimpleNamespace,
+				initTranslation=lambda: None,
+				getCodeAddon=Mock(return_value=self.addon),
+			),
 			"config": module("config", post_configProfileSwitch=self.profile_switch),
 			"core": module("core"),
 			"globalPluginHandler": module(
@@ -112,7 +131,14 @@ class TestSettingsPanel(unittest.TestCase):
 			"winAPI.secureDesktop": module(
 				"winAPI.secureDesktop", post_secureDesktopStateChange=self.secure_desktop,
 			),
-			"wx": module("wx", Choice=Choice, SpinCtrl=Spin, Button=Button, EVT_BUTTON=object()),
+			"wx": module(
+				"wx",
+				Choice=Choice,
+				SpinCtrl=Spin,
+				Button=Button,
+				CheckBox=CheckBox,
+				EVT_BUTTON=object(),
+			),
 			"synthDrivers": drivers,
 			"synthDrivers.shravya": module(
 				"synthDrivers.shravya", SynthDriver=FakeSynth, _settings=self.settings,
@@ -155,13 +181,25 @@ class TestSettingsPanel(unittest.TestCase):
 		self.assertEqual(panel.compute.GetSelection(), 1)
 		self.assertEqual(panel.steps.GetValue(), 4)
 		self.assertEqual(panel.seed.GetValue(), 0)
+		self.assertFalse(panel.delete_resources.GetValue())
 		panel.rate_method.SetSelection(1)
 		panel.compute.SetSelection(0)
 		panel.steps.value = 8
 		panel.seed.value = 42
+		panel.delete_resources.SetValue(True)
 		panel.onSave()
 		self.settings.save.assert_called_once_with("sonic", False, 8, 42)
+		self.cleanup.set_cleanup_enabled.assert_called_once_with(True)
 		self.current.return_value.apply_settings.assert_called_once()
+
+	def test_existing_global_cleanup_preference_is_loaded_and_can_be_disabled(self):
+		self.cleanup.cleanup_enabled.return_value = True
+		panel = self.plugin.ShravyaSettingsPanel()
+		panel.makeSettings(object())
+		self.assertTrue(panel.delete_resources.GetValue())
+		panel.delete_resources.SetValue(False)
+		panel.onSave()
+		self.cleanup.set_cleanup_enabled.assert_called_once_with(False)
 
 	def test_panel_rejects_an_invalid_selection(self):
 		panel = self.plugin.ShravyaSettingsPanel()

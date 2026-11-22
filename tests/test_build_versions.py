@@ -58,6 +58,7 @@ class TestPackagedBuildVersions(unittest.TestCase):
 		shutil.copytree(project / "site_scons", self.root / "site_scons")
 		(self.root / "addon").mkdir()
 		(self.root / "addon" / ".gitkeep").touch()
+		shutil.copy2(project / "addon" / "installTasks.py", self.root / "addon" / "installTasks.py")
 		config = self.root / "addon" / "synthDrivers" / "shravya" / "config.toml"
 		config.parent.mkdir(parents=True)
 		shutil.copy2(project / "addon" / "synthDrivers" / "shravya" / "config.toml", config)
@@ -90,6 +91,10 @@ class TestPackagedBuildVersions(unittest.TestCase):
 				archive.read("doc/en/readme.html").decode("utf-8"),
 			)
 			self.assertNotIn(".gitkeep", archive.namelist())
+			self.assertEqual(
+				archive.read("installTasks.py"),
+				(self.root / "addon" / "installTasks.py").read_bytes(),
+			)
 			self.assertEqual(
 				archive.read("synthDrivers/shravya/config.toml"),
 				(self.root / "addon" / "synthDrivers" / "shravya" / "config.toml").read_bytes(),

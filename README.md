@@ -41,6 +41,13 @@ existing resources with local ZIPs. Cancelling or providing an invalid ZIP
 leaves the previous selection unchanged, and the ZIPs are never deleted.
 Installed packs are stored in the active NVDA configuration directory under
 `shravya`, outside the replaceable add-on directory.
+By default, uninstalling Shravya keeps these files. To remove them on
+uninstall, enable **Delete resources when Shravya is uninstalled** in the
+Shravya settings before removing the add-on. This setting applies to the NVDA
+configuration, not just the current profile. Resources are kept during
+updates and if removal is cancelled; ZIP files are not deleted, including
+those inside the resource directory. If cleanup fails, the NVDA log records
+the error.
 
 Shravya checks for add-on updates on startup and every 24 hours while NVDA is
 running, shows release notes in a read-only text field, asks before downloading

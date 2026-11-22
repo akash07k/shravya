@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import threading
+from functools import cache
 from typing import TYPE_CHECKING, ClassVar, Protocol, cast, override
 
 import addonHandler
@@ -54,6 +55,16 @@ class _Button(Protocol):
 	def Enable(self, enable: bool) -> None: ...
 
 
+class _CheckBox(Protocol):
+	def SetValue(self, value: bool) -> None: ...
+	def GetValue(self) -> bool: ...
+
+
+class _CleanupPreferences(Protocol):
+	def cleanup_enabled(self) -> bool: ...
+	def set_cleanup_enabled(self, enabled: bool) -> None: ...
+
+
 if TYPE_CHECKING:
 
 	class _Wx(Protocol):
@@ -62,8 +73,15 @@ if TYPE_CHECKING:
 		EVT_BUTTON: object
 
 		def Button(self, parent: object, *, label: str) -> _Button: ...
+		def CheckBox(self, parent: object, *, label: str) -> _CheckBox: ...
 
 	wx: _Wx
+
+
+@cache
+def _cleanup_preferences() -> _CleanupPreferences:
+	addon = cast(addonHandler.Addon, addonHandler.getCodeAddon())  # pyright: ignore[reportUnknownMemberType]
+	return cast(_CleanupPreferences, addon.loadModule("installTasks"))
 
 
 def _apply_active_synth() -> None:
@@ -110,6 +128,12 @@ class ShravyaSettingsPanel(gui.settingsDialogs.SettingsPanel):
 			max=_settings.MAX_SEED,
 			initial=_settings.seed(),
 		)
+		# Translators: Remove Shravya's installed resources after uninstalling the add-on.
+		self.delete_resources = helper.addItem(  # pyright: ignore[reportUnknownMemberType]
+			wx.CheckBox(self, label=_("Delete resources &when Shravya is uninstalled")),
+		)
+		self._cleanup_enabled = _cleanup_preferences().cleanup_enabled()
+		self.delete_resources.SetValue(self._cleanup_enabled)
 		# Translators: Open the Shravya resource setup dialog.
 		button = helper.addItem(wx.Button(self, label=_("Set up Shravya &resources...")))  # pyright: ignore[reportUnknownMemberType]
 		button.Enable(self.resource_setup is not None)
@@ -134,6 +158,10 @@ class ShravyaSettingsPanel(gui.settingsDialogs.SettingsPanel):
 			self.steps.GetValue(),
 			self.seed.GetValue(),
 		)
+		cleanup_enabled = self.delete_resources.GetValue()
+		if cleanup_enabled != self._cleanup_enabled:
+			_cleanup_preferences().set_cleanup_enabled(cleanup_enabled)
+			self._cleanup_enabled = cleanup_enabled
 		_apply_active_synth()
 
 
