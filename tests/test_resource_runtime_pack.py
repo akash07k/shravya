@@ -1,9 +1,11 @@
 import io
 import json
+import sys
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 from tools import build_resource_runtime, prepare_resource_runtime, resource_sources
@@ -15,6 +17,7 @@ class TestRuntimePack(unittest.TestCase):
 		self.addCleanup(self.temp.cleanup)
 		self.root = Path(self.temp.name)
 		self.output = self.root / "runtime.zip"
+		self.windows_python = SimpleNamespace(platform="win32", version_info=(3, 13), version=sys.version)
 
 	def test_runtime_pack_records_inputs_and_excludes_model(self):
 		def source(work, repository, revision):
@@ -43,6 +46,7 @@ class TestRuntimePack(unittest.TestCase):
 		saved = self.root / "sources"
 		saved.mkdir()
 		with (
+			patch.object(build_resource_runtime, "sys", self.windows_python),
 			patch.object(
 				resource_sources, "load_blue_source",
 				return_value=resource_sources.BlueSource("example/BlueTTS", "feature"),
@@ -97,6 +101,7 @@ class TestRuntimePack(unittest.TestCase):
 					path.write_bytes(b"runtime")
 
 		with (
+			patch.object(build_resource_runtime, "sys", self.windows_python),
 			patch.object(resource_sources, "github_revision", side_effect=AssertionError("unexpected network")),
 			patch.object(build_resource_runtime, "build_environment", return_value=self.root / "python.exe"),
 			patch.object(build_resource_runtime, "build_polyg2p", return_value=(self.root / "wheel", "MSVC")),
@@ -114,6 +119,15 @@ class TestRuntimePack(unittest.TestCase):
 		self.assertEqual(info["polyg2p_source"], "local polyg2p edits")
 		self.assertNotIn("bluetts_revision", info)
 		self.assertNotIn("polyg2p_revision", info)
+
+	def test_runtime_build_rejects_unsupported_platform_or_python(self):
+		for platform, version in (("linux", (3, 13)), ("win32", (3, 12))):
+			with self.subTest(platform=platform, version=version):
+				fake_sys = SimpleNamespace(platform=platform, version_info=version)
+				with patch.object(build_resource_runtime, "sys", fake_sys):
+					with self.assertRaisesRegex(RuntimeError, "requires Windows and Python 3.13"):
+						build_resource_runtime.build(self.output)
+				self.assertFalse(self.output.exists())
 
 	def test_existing_archive_is_preserved(self):
 		self.output.write_bytes(b"existing")
